@@ -17,6 +17,7 @@ class Todo(models.Model):
     status = models.PositiveSmallIntegerField(default=1, choices=STATUS_CHOICES)
     created_at = models.DateTimeField(auto_now_add=True)
     modified_at = models.DateTimeField(auto_now=True)
+    is_active = models.BooleanField(default=True)
 
     def __str__(self):
         return self.title
