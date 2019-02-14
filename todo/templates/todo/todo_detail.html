@@ -3,8 +3,16 @@
 {% block title %}{{ title }}{% endblock %}
 
 {% block content %}
-    <h1>{{ object.title|title }}</h1>
-    <p>{{ object.description }}</p>
-    <p>{{ object.task_time }}</p>
-    <p> {{ object.get_status_display }}</p>
+    <div class="col-offset-3 mt-5">
+        <div class="card">
+          <div class="card-body">
+            <h5 class="card-title">{{ object.title|title }}</h5>
+            <h6 class="card-subtitle mb-2 text-muted">{{ object.get_status_display }}</h6>
+            <h6 class="card-subtitle mb-2 text-muted">{{ object.task_time }}</h6>
+            <p class="card-text">{{ object.description }}</p>
+            <a href="{% url 'todo-update' object.pk %}" class="card-link">Edit</a>
+            <a href="{% url 'todo-delete' object.pk %}" class="card-link text-danger">Delete</a>
+          </div>
+        </div>
+    </div>
 {% endblock %}

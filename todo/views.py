@@ -6,7 +6,6 @@ from todo.models import Todo
 
 
 class TodoList(ListView):
-    paginate_by = 100  # if pagination is desired
 
     def get_queryset(self):
         return Todo.objects.filter(is_active=True)
@@ -14,6 +13,7 @@ class TodoList(ListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['title'] = 'Todo Home'
+        context['current'] = 'List'
         return context
 
 
@@ -30,11 +30,22 @@ class TodoCreateView(CreateView):
     model = Todo
     fields = ['title', 'description', 'task_time', 'status']
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = 'Add Todo Task'
+        context['current'] = 'Create'
+        return context
+
 
 class TodoUpdate(UpdateView):
     model = Todo
     fields = ['title', 'description', 'task_time', 'status']
     template_name_suffix = '_update_form'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = 'Edit Todo Task'
+        return context
 
 
 class TodoDelete(DeleteView):
@@ -51,3 +62,8 @@ class TodoDelete(DeleteView):
         self.object.is_active = False
         self.object.save()
         return HttpResponseRedirect(success_url)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = 'Delete Todo Task'
+        return context

@@ -3,12 +3,16 @@
 {% block title %}{{ title }}{% endblock %}
 
 {% block content %}
-    <h1>Todo</h1>
-    <ul>
-    {% for todo in object_list %}
-        <li>{{ todo.title }} </li>
-    {% empty %}
-        <li>No Todo items yet.</li>
-    {% endfor %}
-    </ul>
+<div class="col-offset-3 mt-5">
+    <h1>Your Todo...</h1>
+    <div class="card">
+        <ul class="list-group list-group-flush">
+            {% for todo in object_list %}
+            <li class="list-group-item"><a href="{% url 'todo-detail' todo.pk %}">{{ todo.title }}</a></li>
+            {% empty %}
+                <li>No Todo items yet.</li>
+            {% endfor %}
+        </ul>
+    </div>
+</div>
 {% endblock %}

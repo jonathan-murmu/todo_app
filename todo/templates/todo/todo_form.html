@@ -1,11 +1,31 @@
 {% extends "todo/base.html" %}
+{% load widget_tweaks %}
 
 {% block title %}{{ title }}{% endblock %}
 
 {% block content %}
-    <h1>Add a Task</h1>
-    <form method="post">{% csrf_token %}
-        {{ form.as_p }}
-        <input type="submit" value="Save">
-    </form>
+<h1>Add a Task</h1>
+<form method="post">{% csrf_token %}
+
+    {% for field in form.visible_fields %}
+    <div class="form-group" style="position: relative;">
+        {{ field.label_tag }}
+        {% render_field field class="form-control" %}
+        {% if field.help_text %}
+        <small class="form-text text-muted">{{ field.help_text }}</small>
+        {% endif %}
+    </div>
+    {% endfor %}
+
+    <button type="submit" class="btn btn-primary">Add Task</button>
+</form>
+{% endblock %}
+{% block externaljs %}
+<script type="text/javascript">
+    $(function () {
+        $('#id_task_time').datetimepicker({
+            format: 'YYYY-MM-DD h:mm:ss'
+        });
+    });
+</script>
 {% endblock %}
