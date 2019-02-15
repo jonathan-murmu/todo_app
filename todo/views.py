@@ -1,4 +1,7 @@
-from django.http import HttpResponseRedirect
+from django.core import serializers
+from django.core import serializers
+from django.http import HttpResponseRedirect, JsonResponse
+from django.shortcuts import get_object_or_404
 from django.urls import reverse_lazy
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 
@@ -17,13 +20,29 @@ class TodoList(ListView):
         return context
 
 
+class TodoListAPI(TodoList):
+    def get(self, request):
+        response = self.get_queryset()
+        return JsonResponse(serializers.serialize('json', response), safe=False)
+
+
 class TodoDetailView(DetailView):
     model = Todo
+
+    def get_queryset(self):
+        return super().get_queryset().filter(is_active=True)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['title'] = 'Todo'
         return context
+
+
+class TodoDetailAPI(TodoDetailView):
+
+    def get(self, *args,  **kwargs):
+        response = self.get_queryset().filter(pk=self.kwargs['pk'])
+        return JsonResponse(serializers.serialize('json', response), safe=False)
 
 
 class TodoCreateView(CreateView):
