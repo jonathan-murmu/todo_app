@@ -1,7 +1,5 @@
 from django.core import serializers
-from django.core import serializers
 from django.http import HttpResponseRedirect, JsonResponse
-from django.shortcuts import get_object_or_404
 from django.urls import reverse_lazy
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 
@@ -9,6 +7,7 @@ from todo.models import Todo
 
 
 class TodoList(ListView):
+    """List all the active todos."""
 
     def get_queryset(self):
         return Todo.objects.filter(is_active=True)
@@ -21,12 +20,14 @@ class TodoList(ListView):
 
 
 class TodoListAPI(TodoList):
+    """API for List all the actives todos."""
     def get(self, request):
         response = self.get_queryset()
         return JsonResponse(serializers.serialize('json', response), safe=False)
 
 
 class TodoDetailView(DetailView):
+    """List particular todo."""
     model = Todo
 
     def get_queryset(self):
@@ -39,6 +40,7 @@ class TodoDetailView(DetailView):
 
 
 class TodoDetailAPI(TodoDetailView):
+    """API to list particular todo."""
 
     def get(self, *args,  **kwargs):
         response = self.get_queryset().filter(pk=self.kwargs['pk'])
@@ -46,6 +48,7 @@ class TodoDetailAPI(TodoDetailView):
 
 
 class TodoCreateView(CreateView):
+    """Create a new todo task."""
     model = Todo
     fields = ['title', 'description', 'task_time', 'status']
 
@@ -56,7 +59,8 @@ class TodoCreateView(CreateView):
         return context
 
 
-class TodoUpdate(UpdateView):
+class TodoUpdate(TodoDetailView, UpdateView):
+    """Update an existing todo."""
     model = Todo
     fields = ['title', 'description', 'task_time', 'status']
     template_name_suffix = '_update_form'
@@ -68,12 +72,14 @@ class TodoUpdate(UpdateView):
 
 
 class TodoDelete(DeleteView):
+    """Soft delete an existing todo."""
     model = Todo
     success_url = reverse_lazy('todo-list')
 
     def delete(self, request, *args, **kwargs):
-        """
-        Call the delete() method on the fetched object and then redirect to the
+        """Soft Delete.
+
+        Set is_active to False of the fetched object and then redirect to the
         success URL.
         """
         self.object = self.get_object()
